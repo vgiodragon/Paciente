@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void Historiales(View view){
-        Intent intent = new Intent(this,Historiales.class);
+        Intent intent = new Intent(this,HistorialActivity.class);
         startActivity(intent);
 
     }
