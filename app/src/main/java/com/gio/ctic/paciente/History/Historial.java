@@ -1,17 +1,17 @@
-package com.gio.ctic.paciente;
+package com.gio.ctic.paciente.History;
 
 /**
  * Created by user on 07/06/2016.
  */
 public class Historial {
-    private String fecha;
+    private String pac;
     private String sintomas;
     private String descripcion;
     private String doctor;
     private String especialidad;
 
-    public Historial(String fecha, String doctor, String especialidad,String sintomas, String descripcion) {
-        this.fecha = fecha;
+    public Historial(String pac, String doctor, String especialidad,String sintomas, String descripcion) {
+        this.pac = pac;
         this.sintomas = sintomas;
         this.descripcion = descripcion;
         this.doctor = doctor;
@@ -23,7 +23,7 @@ public class Historial {
     }
 
     public String getFecha() {
-        return fecha;
+        return pac;
     }
 
     public String getSintomas() {

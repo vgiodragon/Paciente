@@ -1,5 +1,7 @@
-package com.gio.ctic.paciente;
+package com.gio.ctic.paciente.History;
 
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,19 +11,26 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
+import com.gio.ctic.paciente.ConexionServer;
+import com.gio.ctic.paciente.Otros.Paciente;
+import com.gio.ctic.paciente.R;
+
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class HistorialActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
+    private TextView bien;
 
     private static String LOG_TAG = "CardViewActivity";
     private RecyclerView mRecyclerView;
     private HistorialAdapter mHAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     ArrayAdapter<CharSequence> adapterS;
-
+    Paciente paciente;
+    ArrayList <Historial>results;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +42,12 @@ public class HistorialActivity extends AppCompatActivity implements AdapterView.
         mHAdapter = new HistorialAdapter(getDataSet());
         mRecyclerView.setAdapter(mHAdapter);
 
+        bien= (TextView) findViewById(R.id.tbien);
+        Intent i = getIntent();
+        paciente = i.getParcelableExtra("pac_login");
+        bien.setText("Bienvenido " + paciente.getNombre());
+
+        new cargarhistoria("/conHistory/",paciente.getId()).execute();
         Spinner spinner = (Spinner) findViewById(R.id.spinnerOrdenar);
         spinner.setOnItemSelectedListener(this);
         adapterS = ArrayAdapter.createFromResource(this,
@@ -41,6 +56,7 @@ public class HistorialActivity extends AppCompatActivity implements AdapterView.
         adapterS.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 // Apply the adapter to the spinner
         spinner.setAdapter(adapterS);
+
     }
 
     @Override
@@ -58,21 +74,39 @@ public class HistorialActivity extends AppCompatActivity implements AdapterView.
     }
 
 
-    private ArrayList<Historial> getDataSet() {
-        ArrayList results = new ArrayList<>();
-        results.add(new Historial("11/02/2016","Dr. AGrey","Medicina General","Cold, Heart breaking","Lupus"));
-        results.add(new Historial("10/02/2016","Dr. BGrey","Medicina General","Cold, Heart breaking","Lupus"));
-        results.add(new Historial("09/02/2016","Dr. CGrey","Medicina General","Cold, Heart breaking","Lupus"));
-        results.add(new Historial("08/02/2016","Dr. DGrey","Medicina General","Cold, Heart breaking","Lupus"));
-        results.add(new Historial("07/02/2016","Dr. EGrey","Medicina General","Cold, Heart breaking","Lupus"));
-        results.add(new Historial("06/02/2016","Dr. FGrey","Medicina General","Cold, Heart breaking","Lupus"));
-        results.add(new Historial("15/02/2016","Dr. GGrey","Medicina General","Cold, Heart breaking","Lupus"));
-        results.add(new Historial("14/02/2016","Dr. HGrey","Medicina General","Cold, Heart breaking","Lupus"));
-        results.add(new Historial("13/02/2016","Dr. IGrey","Medicina General","Cold, Heart breaking","Lupus"));
-        results.add(new Historial("12/02/2016","Dr. JGrey","Medicina General","Cold, Heart breaking","Lupus"));
-        results.add(new Historial("01/02/2016","Dr. KGrey","Medicina General","Cold, Heart breaking","Lupus"));
-        results.add(new Historial("02/02/2016","Dr. LGrey","Medicina General","Cold, Heart breaking","Lupus"));
+    private class cargarhistoria extends AsyncTask<String, Void, String> {
+        String url;
+        public cargarhistoria (String url,String iduser){
+            this.url=url+iduser;
+        }
 
+        @Override
+        protected String doInBackground(String... urls) {
+            String respues="...";
+            try {
+
+                ConexionServer cs= new ConexionServer();
+                Log.d("resultad",url + paciente.getId());
+                results = cs.receiveJson(url);
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+            return respues;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("respuesta", result);
+            actualizaArray();
+        }
+    }
+
+    private void actualizaArray(){
+        mHAdapter.setmHistorialSet(results);
+    }
+
+    private ArrayList<Historial> getDataSet() {
+        results = new ArrayList<>();
         return results;
     }
 

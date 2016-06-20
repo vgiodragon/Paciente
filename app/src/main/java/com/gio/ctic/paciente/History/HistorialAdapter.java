@@ -1,10 +1,12 @@
-package com.gio.ctic.paciente;
+package com.gio.ctic.paciente.History;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.gio.ctic.paciente.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,6 +17,12 @@ import java.util.Comparator;
  */
 public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.HistoriaViewHolder>{
     private static String LOG_TAG = "MyRecyclerViewAdapter";
+
+    public void setmHistorialSet(ArrayList<Historial> mHistorialSet) {
+        this.mHistorialSet = mHistorialSet;
+        notifyDataSetChanged();
+    }
+
     private ArrayList<Historial> mHistorialSet;
     private static MyClickListener myClickListener;
 
@@ -48,7 +56,7 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.Hist
 
     public HistorialAdapter(ArrayList<Historial> mHistorialSet) {
         this.mHistorialSet = mHistorialSet;
-        Ordenar(0);
+
     }
 
     @Override
